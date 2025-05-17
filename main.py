@@ -38,11 +38,20 @@ def esconder_texto(imagem_path, mensagem, output_path):
 
     i = 0
     for pixel in pixels:
-        r, g, b = pixel
+        if len(pixel) == 3:
+            r, g, b = pixel
+            a = None
+        elif len(pixel) == 4:
+            r, g, b, a = pixel
+        else:
+            raise ValueError("Formato de pixel não suportado.")
         if i < len(bin_msg): r = (r & ~1) | int(bin_msg[i]); i += 1
         if i < len(bin_msg): g = (g & ~1) | int(bin_msg[i]); i += 1
         if i < len(bin_msg): b = (b & ~1) | int(bin_msg[i]); i += 1
-        novos_pixels.append((r, g, b))
+        if len(pixel) == 4:
+            novos_pixels.append((r, g, b, a))
+        else:
+            novos_pixels.append((r, g, b))
 
     img.putdata(novos_pixels)
     img.save(output_path)
